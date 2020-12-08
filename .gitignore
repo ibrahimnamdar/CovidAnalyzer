@@ -1,0 +1,9 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# IDEs and editors
+.vs/
+obj/
+bin/
+aspnet-core/src/CovidAnalyzer.Web.Host/App_Data/Logs/
+aspnet-core/src/CovidAnalyzer.Web.Mvc/App_Data/Logs/
+aspnet-core/src/CovidAnalyzer.Migrator/Logs/Logs.txt
