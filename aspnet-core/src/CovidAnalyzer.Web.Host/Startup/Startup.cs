@@ -16,8 +16,10 @@ using CovidAnalyzer.Identity;
 using Abp.AspNetCore.SignalR.Hubs;
 using Abp.Dependency;
 using Abp.Json;
+using CovidAnalyzer.Twitter;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using Tweetinvi;
 
 namespace CovidAnalyzer.Web.Host.Startup
 {
@@ -36,6 +38,10 @@ namespace CovidAnalyzer.Web.Host.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // Custom services
+            services.AddTransient<ITwitterAppService, TwitterAppService>();
+            services.AddTransient<ITwitterClient, TwitterClient>();
+
             //MVC
             services.AddControllersWithViews(
                 options =>

@@ -11,6 +11,9 @@
     <RootNamespace>CovidAnalyzer</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="TweetinviAPI" Version="5.0.3" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\CovidAnalyzer.Core\CovidAnalyzer.Core.csproj" />
   </ItemGroup>
 </Project>

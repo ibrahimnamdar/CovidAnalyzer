@@ -6,13 +6,13 @@ namespace CovidAnalyzer.EntityFrameworkCore
     public static class CovidAnalyzerDbContextConfigurer
     {
         public static void Configure(DbContextOptionsBuilder<CovidAnalyzerDbContext> builder, string connectionString)
-        {
-            builder.UseSqlServer(connectionString);
-        }
+    {
+        builder.UseNpgsql(connectionString);
+    }
 
-        public static void Configure(DbContextOptionsBuilder<CovidAnalyzerDbContext> builder, DbConnection connection)
-        {
-            builder.UseSqlServer(connection);
-        }
+    public static void Configure(DbContextOptionsBuilder<CovidAnalyzerDbContext> builder, DbConnection connection)
+    {
+        builder.UseNpgsql(connection);
+    }
     }
 }
