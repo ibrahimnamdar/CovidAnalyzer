@@ -7,7 +7,7 @@ from .models import TweetScore
 class TweetSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tweet
-        fields = ('id', 'text')
+        fields = ('id', 'text', 'created_at')
 
 
 class TweetScoreSerializer(serializers.HyperlinkedModelSerializer):

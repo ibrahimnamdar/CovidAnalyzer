@@ -53,8 +53,8 @@ class TweetViewSet(viewsets.ModelViewSet):
         #     if not tweet['id']:
         #         Tweet.objects.create(id=tweet['id'], text=tweet['text'])
         # Don't bother :)
-        os.environ.setdefault("TWITTER_CLIENT_KEY", "h09cRFKFvdYHDygrninn4lXFz")
-        os.environ.setdefault("TWITTER_CLIENT_SECRET", "paLMnrTaIdP7deOj8ZGGO9Xwj6yh7kwSdwwQneASYHRa08ntbX")
+        os.environ.setdefault("TWITTER_CLIENT_KEY", "")
+        os.environ.setdefault("TWITTER_CLIENT_SECRET", "")
 
         api = twitterSentiment.API()
         today = date.today()
@@ -67,6 +67,10 @@ class TweetViewSet(viewsets.ModelViewSet):
                                     since_id=None, max_id=None, include_entities=False, tweet_mode="extended",
                                     return_json=True)
             data = twitterSentiment.StructureStatusesData(tweet)
+
+            for item in tweet['statuses']:
+                Tweet.objects.create(id=item['id'], text=item['full_text'], created_at=item['created_at'])
+
             structured_tweets = data.getTweet()
             sentiment = twitterSentiment.SentimentScore(structured_tweets)
             score = sentiment.getSentimentClassification()
