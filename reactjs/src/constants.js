@@ -1,7 +1,13 @@
 const GET_USERS_SAGA = 'GET_USERS_SAGA';
 const SET_USERS = 'SET_USERS';
+const GET_TOKEN_SAGA = 'GET_TOKEN_SAGA';
+const SET_TOKEN = 'SET_TOKEN';
+const SET_USERNAME = 'SET_USERNAME';
 
 export {  //eslint-disable-line
   GET_USERS_SAGA,
-  SET_USERS
+  SET_USERS,
+  GET_TOKEN_SAGA,
+  SET_TOKEN,
+  SET_USERNAME
 };

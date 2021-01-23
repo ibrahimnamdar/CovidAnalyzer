@@ -20,8 +20,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'j=h(x0-%$r-^hhr5!j&kjlpl+gj@4-2a0%r1775vnvh3tn7br6'
-TWITTER_CLIENT_KEY = 'h09cRFKFvdYHDygrninn4lXFz'
-TWITTER_CLIENT_SECRET = 'paLMnrTaIdP7deOj8ZGGO9Xwj6yh7kwSdwwQneASYHRa08ntbX'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,17 +38,35 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+    'http://localhost',
+)
 
 ROOT_URLCONF = 'CovidAnalyzerApi.urls'
 

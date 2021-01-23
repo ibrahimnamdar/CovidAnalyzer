@@ -17,6 +17,8 @@ import twitterSentiment
 import os
 from datetime import date
 from datetime import timedelta
+import tagme
+from decouple import config
 
 schema_view = get_swagger_view(title='Pastebin API')
 
@@ -33,6 +35,12 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
     def get_tweet_scores(self, request):
         tweet_scores = TweetScore.objects.all().order_by('date')
         return Response(tweet_scores)
+
+    @action(detail=False, methods=['get'])
+    def get_related_entities(self, request):
+        tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
+        lunch_annotations = tagme.annotate(Tweet.objects.all()[5].text)
+        return Response(1)
 
 
 class TweetViewSet(viewsets.ModelViewSet):
@@ -52,9 +60,12 @@ class TweetViewSet(viewsets.ModelViewSet):
         # for tweet in tweets:
         #     if not tweet['id']:
         #         Tweet.objects.create(id=tweet['id'], text=tweet['text'])
-        # Don't bother :)
-        os.environ.setdefault("TWITTER_CLIENT_KEY", "")
-        os.environ.setdefault("TWITTER_CLIENT_SECRET", "")
+        twitter_client_key = config('TWITTER_CLIENT_KEY')
+        twitter_client_secret = config('TWITTER_CLIENT_SECRET')
+        os.environ.setdefault("TWITTER_CLIENT_KEY", twitter_client_key)
+        os.environ.setdefault("TWITTER_CLIENT_SECRET", twitter_client_secret)
+
+
 
         api = twitterSentiment.API()
         today = date.today()
