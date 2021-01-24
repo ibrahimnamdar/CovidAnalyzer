@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Form, Button } from 'react-bootstrap'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Form, Button } from "react-bootstrap";
 
-import { getTokenSaga } from '../../actions';
+import { getTokenSaga } from "../../actions";
 
-import styles from './styles';
+import styles from "./styles";
 
 class Login extends Component {
-
   state = {
-    username: '',
-    password:''
+    username: "",
+    password: "",
   };
 
   constructor() {
@@ -19,7 +18,10 @@ class Login extends Component {
   }
 
   handleBtnOnClick() {
-    this.props.getTokenSaga({username:this.state.username, password:this.state.password});
+    this.props.getTokenSaga({
+      username: this.state.username,
+      password: this.state.password,
+    });
   }
 
   render() {
@@ -27,25 +29,42 @@ class Login extends Component {
 
     return (
       <div>
-        <div className="container align">
+        <div
+          className="container align"
+          style={{ width: "50%", margin: "5% 0 0 35%" }}
+        >
           <div className="row">
             <div className="col-md-6">
               <Form>
-                <Form.Text>Covid Analyzer</Form.Text>
+                <h2>Login</h2>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
-                  <Form.Control onChange={(e) => {this.state.username = e.target.value }} type="email" placeholder="Enter email" />
+                  <Form.Control
+                    onChange={(e) => {
+                      this.state.username = e.target.value;
+                    }}
+                    type="email"
+                    placeholder="Enter email"
+                  />
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control onChange={(e) => {this.state.password = e.target.value }} type="password" placeholder="Password" />
+                  <Form.Control
+                    onChange={(e) => {
+                      this.state.password = e.target.value;
+                    }}
+                    type="password"
+                    placeholder="Password"
+                  />
                 </Form.Group>
                 <Form.Group controlId="formBasicCheckbox">
                   <Form.Check type="checkbox" label="Check me out" />
                 </Form.Group>
-                <Button variant="primary" type="button"
-                          onClick={this.handleBtnOnClick}
+                <Button
+                  variant="primary"
+                  type="button"
+                  onClick={this.handleBtnOnClick}
                 >
                   Submit
                 </Button>
@@ -58,12 +77,12 @@ class Login extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  token: state.usersReducer.token
+const mapStateToProps = (state) => ({
+  token: state.usersReducer.token,
 });
 
-const mapDispatchToProps = dispatch => ({
-  getTokenSaga: (data) => dispatch(getTokenSaga(data))
+const mapDispatchToProps = (dispatch) => ({
+  getTokenSaga: (data) => dispatch(getTokenSaga(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -4,7 +4,9 @@ import {
   GET_TOKEN_SAGA,
   SET_TOKEN,
   SET_USERNAME,
+  SET_TWEET_SCORES,
   REGISTER_USER_SAGA,
+  GET_TWEET_SCORES_SAGA,
 } from "../constants";
 
 export function setUsers(users) {
@@ -18,6 +20,14 @@ export function setToken(token) {
   return {
     type: SET_TOKEN,
     token,
+  };
+}
+
+export function setTweetScores(tweetScores) {
+  console.log("setTweetScores" + tweetScores);
+  return {
+    type: SET_TWEET_SCORES,
+    tweetScores,
   };
 }
 
@@ -46,5 +56,11 @@ export function registerUserSaga(data) {
   return {
     type: REGISTER_USER_SAGA,
     data,
+  };
+}
+
+export function getTweetScoresSaga() {
+  return {
+    type: GET_TWEET_SCORES_SAGA,
   };
 }

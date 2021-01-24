@@ -19,6 +19,21 @@ export async function getToken(data) {
   return response.json();
 }
 
+export async function getTweetScores() {
+  const settings = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("token")}`,
+    },
+  };
+  const response = await fetch(
+    `${baseUrl}/tweetScores/get_tweet_scores/`,
+    settings
+  );
+  return response.json();
+}
+
 export async function getUsername(data) {
   console.log("getUsername" + JSON.stringify(data));
   const settings = {

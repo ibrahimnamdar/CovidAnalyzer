@@ -1,1 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=B612&display=swap");
 
+body {
+  background-color: azure;
+  font-family: "B612", sans-serif;
+}
+
+.navbar,
+.navbar-default {
+  /* background-color: #457fa8 !important; */
+  background-color: #005379 !important; /* override background image gradient w/ flat color */
+}
+
+.jumbotron {
+  background-color: #d7f0fe !important;
+}
+
+.nav-link {
+  color: white;
+}
+
+.nav-link:hover {
+  color: #d7f0fe;
+}
+
+.btn {
+  background-color: #457fa8;
+}
+
+.dashboard {
+  width: 90%;
+  left: 10%;
+  height: 1000px;
+  position: relative;
+}

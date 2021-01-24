@@ -10,6 +10,17 @@ import Login from "./screens/Login";
 import Register from "./screens/Register";
 import Home from "./screens/Home";
 import Dashboard from "./screens/Dashboard";
+import Landing from "./screens/Landing";
+import {
+  Checkbox,
+  Grid,
+  Header,
+  Icon,
+  Image,
+  Menu,
+  Segment,
+  Sidebar,
+} from "semantic-ui-react";
 
 import RequireAuth from "./middlewares/RequireAuth";
 
@@ -33,6 +44,7 @@ export default class App extends Component {
               <Nav className="mr-auto" />
               <Nav.Link href="#"></Nav.Link>
               <NavDropdown
+                style={{ color: "#FFFFFF" }}
                 title={
                   localStorage.getItem("username")
                     ? localStorage.getItem("username")
@@ -46,10 +58,52 @@ export default class App extends Component {
                 </NavDropdown.Item>
               </NavDropdown>
             </Navbar>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/" component={RequireAuth(Home)} />
-            <Route exact path="/dashboard" component={RequireAuth(Dashboard)} />
+            <Sidebar.Pushable
+              as={Segment}
+              style={{
+                height: "1000px",
+                margin: "0 0 0 -10px",
+                border: "none",
+                padding: "0",
+              }}
+            >
+              <Sidebar
+                as={Menu}
+                animation="overlay"
+                icon="labeled"
+                inverted
+                vertical
+                visible
+                width="thin"
+                style={{ backgroundColor: "#005379" }}
+              >
+                <Menu.Item as="a" href="/">
+                  <Icon name="home" />
+                  Home
+                </Menu.Item>
+                <Menu.Item as="a" href="/dashboard">
+                  <Icon name="chart area" />
+                  Dashboard
+                </Menu.Item>
+                <Menu.Item as="a">
+                  <Icon name="search" />
+                  Search
+                </Menu.Item>
+                <Menu.Item as="a">
+                  <Icon name="cloud" />
+                  Most Used Words
+                </Menu.Item>
+              </Sidebar>
+
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/" component={Landing} />
+              <Route
+                exact
+                path="/dashboard"
+                component={RequireAuth(Dashboard)}
+              />
+            </Sidebar.Pushable>
           </div>
         </ConnectedRouter>
       </Provider>

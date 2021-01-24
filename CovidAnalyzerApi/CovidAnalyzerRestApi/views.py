@@ -21,6 +21,7 @@ import tagme
 from decouple import config
 import nltk
 from nltk.tokenize import RegexpTokenizer
+import jsonpickle
 
 schema_view = get_swagger_view(title='Pastebin API')
 
@@ -30,18 +31,19 @@ urlpatterns = [
 
 
 class TweetScoreViewSet(viewsets.ModelViewSet):
-    queryset = TweetScore.objects.all().order_by('id')
+    queryset = TweetScore.objects.all().order_by('date')
     serializer_class = TweetScoreSerializer
 
     @action(detail=False, methods=['get'])
     def get_tweet_scores(self, request):
-        tweet_scores = TweetScore.objects.all().order_by('date')
-        return Response(tweet_scores)
+        tweet_scores = TweetScore.objects.all().order_by('date').values_list('tweet_score', flat=True)
+        dates = TweetScore.objects.all().order_by('date').values_list('date', flat=True)
+        return Response({'tweet_scores': tweet_scores, 'dates': dates})
 
     @action(detail=False, methods=['get'])
     def get_related_entities(self, request):
         tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
-        texts=''
+        texts = ''
         for tweet in Tweet.objects.all():
             texts += tweet.text
 

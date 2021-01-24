@@ -32,7 +32,10 @@ class Register extends Component {
   render() {
     return (
       <div>
-        <div className="container align">
+        <div
+          className="container align"
+          style={{ width: "50%", margin: "5% 0 0 35%" }}
+        >
           <div className="row">
             <div className="col-md-6">
               <Form>
