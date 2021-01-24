@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
-from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework import permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from rest_framework.views import APIView
+from .serializers import UserSerializer, UserSerializerWithToken
 # Create your views here.
 from rest_framework import viewsets
 
@@ -19,6 +19,8 @@ from datetime import date
 from datetime import timedelta
 import tagme
 from decouple import config
+import nltk
+from nltk.tokenize import RegexpTokenizer
 
 schema_view = get_swagger_view(title='Pastebin API')
 
@@ -39,8 +41,20 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_related_entities(self, request):
         tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
-        lunch_annotations = tagme.annotate(Tweet.objects.all()[5].text)
-        return Response(1)
+        texts=''
+        for tweet in Tweet.objects.all():
+            texts += tweet.text
+
+        # tokenized_words  = nltk.classify.naivebayes.NaiveBayesClassifier.most_informative_features(texts)
+
+        tokenizer = RegexpTokenizer(r'\w+')
+        allWords = tokenizer.tokenize(texts)
+        allWordDist = nltk.FreqDist(w.lower() for w in allWords)
+        stopwords = nltk.corpus.stopwords.words('english')
+        allWordExceptStopDist = nltk.FreqDist(w.lower() for w in allWords if w not in stopwords)
+
+        filtered_words = {key: value for key, value in allWordExceptStopDist.items() if value >= 5}
+        return Response(filtered_words)
 
 
 class TweetViewSet(viewsets.ModelViewSet):
@@ -65,8 +79,6 @@ class TweetViewSet(viewsets.ModelViewSet):
         os.environ.setdefault("TWITTER_CLIENT_KEY", twitter_client_key)
         os.environ.setdefault("TWITTER_CLIENT_SECRET", twitter_client_secret)
 
-
-
         api = twitterSentiment.API()
         today = date.today()
 
@@ -87,3 +99,29 @@ class TweetViewSet(viewsets.ModelViewSet):
             score = sentiment.getSentimentClassification()
             TweetScore.objects.create(tweet_score=score, date=current_day)
         return Response(1)
+
+
+@api_view(['GET'])
+def current_user(request):
+    """
+    Determine the current user by their token, and return their data
+    """
+
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+
+class UserList(APIView):
+    """
+    Create a new user. It's called 'UserList' because normally we'd have a get
+    method here too, for retrieving a list of all User objects.
+    """
+
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, format=None):
+        serializer = UserSerializerWithToken(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

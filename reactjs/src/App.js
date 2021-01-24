@@ -7,6 +7,7 @@ import { Route } from "react-router-dom";
 import store, { history } from "./store";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import Login from "./screens/Login";
+import Register from "./screens/Register";
 import Home from "./screens/Home";
 import Dashboard from "./screens/Dashboard";
 
@@ -46,6 +47,7 @@ export default class App extends Component {
               </NavDropdown>
             </Navbar>
             <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
             <Route exact path="/" component={RequireAuth(Home)} />
             <Route exact path="/dashboard" component={RequireAuth(Dashboard)} />
           </div>
