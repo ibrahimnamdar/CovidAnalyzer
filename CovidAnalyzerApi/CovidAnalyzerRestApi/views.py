@@ -41,7 +41,7 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
         return Response({'tweet_scores': tweet_scores, 'dates': dates})
 
     @action(detail=False, methods=['get'])
-    def get_related_entities(self, request):
+    def get_frequent_entities(self, request):
         tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
         texts = ''
         for tweet in Tweet.objects.all():
@@ -56,7 +56,15 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
         allWordExceptStopDist = nltk.FreqDist(w.lower() for w in allWords if w not in stopwords)
 
         filtered_words = {key: value for key, value in allWordExceptStopDist.items() if value >= 5}
-        return Response(filtered_words)
+
+        excluded_words = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "15", "23", "19", "a", "the", "it", "me",
+                          "my", "we", "and", "in", "us", "33", "https", "http", "co", "i", "rt","get"]
+        for item in excluded_words:
+            filtered_words.pop(item, None)
+
+        sa = sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)
+        data_sorted = {k: v for k, v in sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)}
+        return Response({'keys': list(data_sorted.keys())[:20], 'values': list(data_sorted.values())[:20]})
 
 
 class TweetViewSet(viewsets.ModelViewSet):

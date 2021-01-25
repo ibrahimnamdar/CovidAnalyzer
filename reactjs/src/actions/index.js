@@ -5,8 +5,10 @@ import {
   SET_TOKEN,
   SET_USERNAME,
   SET_TWEET_SCORES,
+  SET_FREQUENT_ENTITIES,
   REGISTER_USER_SAGA,
   GET_TWEET_SCORES_SAGA,
+  GET_FREQUENT_ENTITIES_SAGA,
 } from "../constants";
 
 export function setUsers(users) {
@@ -24,10 +26,16 @@ export function setToken(token) {
 }
 
 export function setTweetScores(tweetScores) {
-  console.log("setTweetScores" + tweetScores);
   return {
     type: SET_TWEET_SCORES,
     tweetScores,
+  };
+}
+
+export function setFrequentEntities(frequentEntities) {
+  return {
+    type: SET_FREQUENT_ENTITIES,
+    frequentEntities,
   };
 }
 
@@ -62,5 +70,11 @@ export function registerUserSaga(data) {
 export function getTweetScoresSaga() {
   return {
     type: GET_TWEET_SCORES_SAGA,
+  };
+}
+
+export function getFrequentEntitiesSaga() {
+  return {
+    type: GET_FREQUENT_ENTITIES_SAGA,
   };
 }

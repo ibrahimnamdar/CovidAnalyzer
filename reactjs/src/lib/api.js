@@ -34,6 +34,21 @@ export async function getTweetScores() {
   return response.json();
 }
 
+export async function getFrequentEntities() {
+  const settings = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("token")}`,
+    },
+  };
+  const response = await fetch(
+    `${baseUrl}/tweetScores/get_frequent_entities/`,
+    settings
+  );
+  return response.json();
+}
+
 export async function getUsername(data) {
   console.log("getUsername" + JSON.stringify(data));
   const settings = {

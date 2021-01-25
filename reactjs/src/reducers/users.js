@@ -3,9 +3,16 @@ import {
   SET_TOKEN,
   SET_USERNAME,
   SET_TWEET_SCORES,
+  SET_FREQUENT_ENTITIES,
 } from "../constants";
 
-const initialState = { users: [], token: "", username: "", tweetScores: {} };
+const initialState = {
+  users: [],
+  token: "",
+  username: "",
+  tweetScores: {},
+  frequentEntities: {},
+};
 
 export default function setBrowserInfo(state = initialState, action) {
   switch (action.type) {
@@ -28,6 +35,11 @@ export default function setBrowserInfo(state = initialState, action) {
       return {
         ...state,
         tweetScores: action.tweetScores,
+      };
+    case SET_FREQUENT_ENTITIES:
+      return {
+        ...state,
+        frequentEntities: action.frequentEntities,
       };
     default:
       return state;
