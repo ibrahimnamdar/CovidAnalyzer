@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Button, Table } from "semantic-ui-react";
 import { Bar, Line } from "react-chartjs-2";
-import { getTweetScoresSaga, getFrequentEntitiesSaga } from "../../actions";
+import {
+  getTweetScoresSaga,
+  getFrequentEntitiesSaga,
+  getLatestTweetsSaga,
+} from "../../actions";
 import { List, Image, Icon } from "semantic-ui-react";
 import { ListGroup } from "react-bootstrap";
 import styles from "./styles";
@@ -42,11 +46,12 @@ class Dashboard extends Component {
   componentDidMount() {
     this.props.getTweetScoresSaga();
     this.props.getFrequentEntitiesSaga();
+    this.props.getLatestTweetsSaga();
   }
 
   render() {
-    const { tweetScores, frequentEntities } = this.props;
-    console.log("tweetScores" + JSON.stringify(frequentEntities));
+    const { tweetScores, frequentEntities, latestTweets } = this.props;
+    console.log("tweetScores" + JSON.stringify(latestTweets));
 
     const dataBarGraph = {
       labels: frequentEntities ? frequentEntities.keys : [],
@@ -120,7 +125,11 @@ class Dashboard extends Component {
             >
               <Icon size="big" name="line graph" />
               Most used word recently (except covid) :{" "}
-              <span style={{ fontSize: "16px" }}>vaccine</span>
+              <span style={{ fontSize: "16px" }}>
+                {frequentEntities && frequentEntities.keys
+                  ? frequentEntities.keys[1]
+                  : "covid"}
+              </span>
             </Button>
           </div>
           <div className="col-md-6" style={{ right: "5%" }}>
@@ -134,8 +143,8 @@ class Dashboard extends Component {
               }}
             >
               <Icon size="big" name="smile" />
-              Average of Tweet Score Positivity: / 10
-              <span className="sr-only">unread messages</span>
+              Average of Tweet Score Positivity:{" "}
+              {tweetScores ? tweetScores.average_tweet_score : ""} / 10
             </Button>
           </div>
         </div>
@@ -148,8 +157,19 @@ class Dashboard extends Component {
                 <Icon size="large" name="list" />
                 Recent Tweets
               </ListGroup.Item>
-              <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-              <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
+              {latestTweets &&
+                latestTweets.results &&
+                latestTweets.results.length > 0 &&
+                latestTweets.results.map(({ text }, i) => (
+                  <ListGroup.Item key={i}>
+                    <Icon
+                      size="large"
+                      name="twitter"
+                      style={{ "padding-right": "30px", color: "#1DA1F2" }}
+                    />
+                    {text}
+                  </ListGroup.Item>
+                ))}
             </ListGroup>
           </div>
         </div>
@@ -161,11 +181,13 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => ({
   tweetScores: state.usersReducer.tweetScores,
   frequentEntities: state.usersReducer.frequentEntities,
+  latestTweets: state.usersReducer.latestTweets,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getTweetScoresSaga: () => dispatch(getTweetScoresSaga()),
   getFrequentEntitiesSaga: () => dispatch(getFrequentEntitiesSaga()),
+  getLatestTweetsSaga: () => dispatch(getLatestTweetsSaga()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

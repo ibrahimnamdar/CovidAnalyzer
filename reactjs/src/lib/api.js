@@ -49,6 +49,36 @@ export async function getFrequentEntities() {
   return response.json();
 }
 
+export async function getLatestTweets() {
+  const settings = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("token")}`,
+    },
+  };
+  const response = await fetch(
+    `${baseUrl}/tweets?format=json&limit=100`,
+    settings
+  );
+  return response.json();
+}
+
+export async function getMostUsedWords() {
+  const settings = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("token")}`,
+    },
+  };
+  const response = await fetch(
+    `${baseUrl}/tweetScores/get_most_used_words/`,
+    settings
+  );
+  return response.json();
+}
+
 export async function getUsername(data) {
   console.log("getUsername" + JSON.stringify(data));
   const settings = {

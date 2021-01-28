@@ -4,6 +4,8 @@ import {
   SET_USERNAME,
   SET_TWEET_SCORES,
   SET_FREQUENT_ENTITIES,
+  SET_LATEST_TWEETS,
+  SET_MOST_USED_WORDS,
 } from "../constants";
 
 const initialState = {
@@ -12,6 +14,8 @@ const initialState = {
   username: "",
   tweetScores: {},
   frequentEntities: {},
+  latestTweets: {},
+  mostUsedWords: {},
 };
 
 export default function setBrowserInfo(state = initialState, action) {
@@ -40,6 +44,21 @@ export default function setBrowserInfo(state = initialState, action) {
       return {
         ...state,
         frequentEntities: action.frequentEntities,
+      };
+    case SET_LATEST_TWEETS:
+      return {
+        ...state,
+        latestTweets: action.latestTweets,
+      };
+    case SET_LATEST_TWEETS:
+      return {
+        ...state,
+        latestTweets: action.latestTweets,
+      };
+    case SET_MOST_USED_WORDS:
+      return {
+        ...state,
+        mostUsedWords: action.mostUsedWords,
       };
     default:
       return state;

@@ -12,7 +12,7 @@ class Landing extends Component {
   }
   render() {
     return (
-      <div>
+      <div style={{ "min-height": "1000px" }}>
         <Jumbotron style={{ width: "50%", margin: "10% 0 0 25%" }}>
           <h1>Welcome to CovidAnalyzer!</h1>
           <p>

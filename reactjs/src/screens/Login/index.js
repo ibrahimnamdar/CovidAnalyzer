@@ -28,11 +28,8 @@ class Login extends Component {
     const { token } = this.props;
 
     return (
-      <div>
-        <div
-          className="container align"
-          style={{ width: "50%", margin: "5% 0 0 35%" }}
-        >
+      <div style={{ "min-height": "1000px" }}>
+        <div style={{ width: "50%", margin: "5% 0 0 35%" }}>
           <div className="row">
             <div className="col-md-6">
               <Form>
@@ -57,9 +54,6 @@ class Login extends Component {
                     type="password"
                     placeholder="Password"
                   />
-                </Form.Group>
-                <Form.Group controlId="formBasicCheckbox">
-                  <Form.Check type="checkbox" label="Check me out" />
                 </Form.Group>
                 <Button
                   variant="primary"

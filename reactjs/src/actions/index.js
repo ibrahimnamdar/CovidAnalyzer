@@ -6,9 +6,13 @@ import {
   SET_USERNAME,
   SET_TWEET_SCORES,
   SET_FREQUENT_ENTITIES,
+  SET_LATEST_TWEETS,
   REGISTER_USER_SAGA,
   GET_TWEET_SCORES_SAGA,
   GET_FREQUENT_ENTITIES_SAGA,
+  GET_LATEST_TWEETS_SAGA,
+  GET_MOST_USED_WORDS_SAGA,
+  SET_MOST_USED_WORDS,
 } from "../constants";
 
 export function setUsers(users) {
@@ -36,6 +40,20 @@ export function setFrequentEntities(frequentEntities) {
   return {
     type: SET_FREQUENT_ENTITIES,
     frequentEntities,
+  };
+}
+
+export function setLatestTweets(latestTweets) {
+  return {
+    type: SET_LATEST_TWEETS,
+    latestTweets,
+  };
+}
+
+export function setMostUsedWords(mostUsedWords) {
+  return {
+    type: SET_MOST_USED_WORDS,
+    mostUsedWords,
   };
 }
 
@@ -76,5 +94,17 @@ export function getTweetScoresSaga() {
 export function getFrequentEntitiesSaga() {
   return {
     type: GET_FREQUENT_ENTITIES_SAGA,
+  };
+}
+
+export function getLatestTweetsSaga() {
+  return {
+    type: GET_LATEST_TWEETS_SAGA,
+  };
+}
+
+export function getMostUsedWordsSaga() {
+  return {
+    type: GET_MOST_USED_WORDS_SAGA,
   };
 }

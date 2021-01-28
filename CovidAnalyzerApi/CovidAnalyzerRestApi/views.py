@@ -39,7 +39,8 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
     def get_tweet_scores(self, request):
         tweet_scores = TweetScore.objects.all().order_by('date').values_list('tweet_score', flat=True)
         dates = TweetScore.objects.all().order_by('date').values_list('date', flat=True)
-        return Response({'tweet_scores': tweet_scores, 'dates': dates, 'average_tweet_score': statistics.mean(tweet_scores)})
+        return Response({'tweet_scores': tweet_scores, 'dates': dates,
+                         'average_tweet_score': round(statistics.mean(tweet_scores) * 10, 1)})
 
     @action(detail=False, methods=['get'])
     def get_frequent_entities(self, request):
@@ -59,7 +60,7 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
         filtered_words = {key: value for key, value in allWordExceptStopDist.items() if value >= 5}
 
         excluded_words = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "15", "23", "19", "a", "the", "it", "me",
-                          "my", "we", "and", "in", "us", "33", "https", "http", "co", "i", "rt","get"]
+                          "my", "we", "and", "in", "us", "33", "https", "http", "co", "i", "rt", "get"]
         for item in excluded_words:
             filtered_words.pop(item, None)
 
@@ -67,12 +68,46 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
         data_sorted = {k: v for k, v in sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)}
         return Response({'keys': list(data_sorted.keys())[:20], 'values': list(data_sorted.values())[:20]})
 
+    @action(detail=False, methods=['get'])
+    def get_most_used_words(self, request):
+        tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
+        texts = ''
+        for tweet in Tweet.objects.all():
+            texts += tweet.text
+
+        # tokenized_words  = nltk.classify.naivebayes.NaiveBayesClassifier.most_informative_features(texts)
+
+        tokenizer = RegexpTokenizer(r'\w+')
+        allWords = tokenizer.tokenize(texts)
+        allWordDist = nltk.FreqDist(w.lower() for w in allWords)
+        stopwords = nltk.corpus.stopwords.words('english')
+        allWordExceptStopDist = nltk.FreqDist(w.lower() for w in allWords if w not in stopwords)
+
+        filtered_words = {key: value for key, value in allWordExceptStopDist.items() if value >= 5}
+
+        excluded_words = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "15", "23", "19", "a", "the", "it", "me",
+                          "my", "we", "and", "in", "us", "33", "https", "http", "co", "i", "rt", "get"]
+        for item in excluded_words:
+            filtered_words.pop(item, None)
+
+        sa = sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)
+        data_sorted = {k: v for k, v in sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)}
+        most_used_words = []
+
+        for item in list(filtered_words.items())[:100]:
+            most_used_words.append({'text': item[0], 'value': item[1]})
+        return Response({'most_used_words': most_used_words})
+
 
 class TweetViewSet(viewsets.ModelViewSet):
     queryset = Tweet.objects.all().order_by('id')
     serializer_class = TweetSerializer
 
-    
+    @action(detail=False, methods=['get'])
+    def get_latest_tweets(self, request):
+        tweets = Tweet.objects.all().order_by('created_at')
+        serializer = self.get_serializer(tweets)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     def seed_tweets(self, request):
@@ -111,6 +146,32 @@ class TweetViewSet(viewsets.ModelViewSet):
             sentiment = twitterSentiment.SentimentScore(structured_tweets)
             score = sentiment.getSentimentClassification()
             TweetScore.objects.create(tweet_score=score, date=current_day)
+        return Response(1)
+
+    @action(detail=False, methods=['get'])
+    def search(self, request):
+        twitter_client_key = config('TWITTER_CLIENT_KEY')
+        twitter_client_secret = config('TWITTER_CLIENT_SECRET')
+        os.environ.setdefault("TWITTER_CLIENT_KEY", twitter_client_key)
+        os.environ.setdefault("TWITTER_CLIENT_SECRET", twitter_client_secret)
+
+        api = twitterSentiment.API()
+        today = date.today()
+
+        for i in range(7):
+            current_day = today - timedelta(days=i)
+
+            tweet = api.querySearch(q='covid', geocode=None, lang='en', result_type='recent', count=100,
+                                    until=current_day.strftime('%Y-%m-%d'),
+                                    since_id=None, max_id=None, include_entities=False, tweet_mode="extended",
+                                    return_json=True)
+            data = twitterSentiment.StructureStatusesData(tweet)
+
+
+
+            structured_tweets = data.getTweet()
+            sentiment = twitterSentiment.SentimentScore(structured_tweets)
+            score = sentiment.getSentimentClassification()
         return Response(1)
 
 
