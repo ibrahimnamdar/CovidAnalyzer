@@ -33,3 +33,16 @@ body {
   height: 1000px;
   position: relative;
 }
+
+.statistics {
+  left: 10%;
+  bottom: 500px;
+  position: relative;
+}
+
+.tweets {
+  left: 10%;
+  bottom: 450px;
+  position: relative;
+  width: 90%;
+}

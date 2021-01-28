@@ -11,16 +11,9 @@ import Register from "./screens/Register";
 import Home from "./screens/Home";
 import Dashboard from "./screens/Dashboard";
 import Landing from "./screens/Landing";
-import {
-  Checkbox,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Menu,
-  Segment,
-  Sidebar,
-} from "semantic-ui-react";
+import MostUsedWords from "./screens/MostUsedWords";
+import Search from "./screens/Search";
+import { Icon, Menu, Segment, Sidebar } from "semantic-ui-react";
 
 import RequireAuth from "./middlewares/RequireAuth";
 
@@ -40,7 +33,7 @@ export default class App extends Component {
         <ConnectedRouter history={history}>
           <div>
             <Navbar bg="primary" variant="dark">
-              <Navbar.Brand href="/dashboard">Covid Analyzer</Navbar.Brand>
+              <Navbar.Brand href="/">Covid Analyzer</Navbar.Brand>
               <Nav className="mr-auto" />
               <Nav.Link href="#"></Nav.Link>
               <NavDropdown
@@ -61,7 +54,7 @@ export default class App extends Component {
             <Sidebar.Pushable
               as={Segment}
               style={{
-                height: "1000px",
+                height: "100%",
                 margin: "0 0 0 -10px",
                 border: "none",
                 padding: "0",
@@ -75,7 +68,9 @@ export default class App extends Component {
                 vertical
                 visible
                 width="thin"
-                style={{ backgroundColor: "#005379" }}
+                style={{
+                  backgroundColor: "#005379",
+                }}
               >
                 <Menu.Item as="a" href="/">
                   <Icon name="home" />
@@ -85,11 +80,11 @@ export default class App extends Component {
                   <Icon name="chart area" />
                   Dashboard
                 </Menu.Item>
-                <Menu.Item as="a">
+                <Menu.Item as="a" href="/search">
                   <Icon name="search" />
                   Search
                 </Menu.Item>
-                <Menu.Item as="a">
+                <Menu.Item as="a" href="/most-used-words">
                   <Icon name="cloud" />
                   Most Used Words
                 </Menu.Item>
@@ -103,6 +98,12 @@ export default class App extends Component {
                 path="/dashboard"
                 component={RequireAuth(Dashboard)}
               />
+              <Route
+                exact
+                path="/most-used-words"
+                component={RequireAuth(MostUsedWords)}
+              />
+              <Route exact path="/search" component={RequireAuth(Search)} />
             </Sidebar.Pushable>
           </div>
         </ConnectedRouter>

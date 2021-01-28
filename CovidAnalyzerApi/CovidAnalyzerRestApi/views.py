@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSerializerWithToken
 # Create your views here.
 from rest_framework import viewsets
+import statistics
 
 from .serializers import TweetSerializer, TweetScoreSerializer
 from .models import Tweet, TweetScore
@@ -38,7 +39,7 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
     def get_tweet_scores(self, request):
         tweet_scores = TweetScore.objects.all().order_by('date').values_list('tweet_score', flat=True)
         dates = TweetScore.objects.all().order_by('date').values_list('date', flat=True)
-        return Response({'tweet_scores': tweet_scores, 'dates': dates})
+        return Response({'tweet_scores': tweet_scores, 'dates': dates, 'average_tweet_score': statistics.mean(tweet_scores)})
 
     @action(detail=False, methods=['get'])
     def get_frequent_entities(self, request):
@@ -70,6 +71,8 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
 class TweetViewSet(viewsets.ModelViewSet):
     queryset = Tweet.objects.all().order_by('id')
     serializer_class = TweetSerializer
+
+    
 
     @action(detail=False, methods=['get'])
     def seed_tweets(self, request):

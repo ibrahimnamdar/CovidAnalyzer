@@ -4,7 +4,12 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 
 import styles from "./styles";
 
-class Login extends Component {
+class Landing extends Component {
+  componentDidMount() {
+    if (localStorage.getItem("token")) {
+      window.location.href = "/dashboard";
+    }
+  }
   render() {
     return (
       <div>
@@ -34,4 +39,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default Landing;

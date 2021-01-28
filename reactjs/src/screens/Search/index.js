@@ -99,44 +99,12 @@ class Dashboard extends Component {
       <div>
         <div className="row dashboard">
           <div className="col-md-6">
-            <Bar data={dataBarGraph} options={options} height={161} />
+            <Bar data={dataBarGraph} options={options} height={154.7} />
           </div>
           <div className="col-md-6">
             <div className="row">
               <Line data={dataLineGraph} options={options} height={154.7} />
             </div>
-          </div>
-        </div>
-        <div className="row statistics">
-          <div className="col-md-6">
-            <Button
-              variant="primary"
-              style={{
-                backgroundColor: "#005379",
-                color: "white",
-                cursor: "default",
-                "min-width": "45%",
-              }}
-            >
-              <Icon size="big" name="line graph" />
-              Most used word recently (except covid) :{" "}
-              <span style={{ fontSize: "16px" }}>vaccine</span>
-            </Button>
-          </div>
-          <div className="col-md-6" style={{ right: "5%" }}>
-            <Button
-              variant="primary"
-              style={{
-                backgroundColor: "#005379",
-                color: "white",
-                cursor: "default",
-                "min-width": "45%",
-              }}
-            >
-              <Icon size="big" name="smile" />
-              Average of Tweet Score Positivity: / 10
-              <span className="sr-only">unread messages</span>
-            </Button>
           </div>
         </div>
         <div className="row tweets">
@@ -146,7 +114,7 @@ class Dashboard extends Component {
                 style={{ backgroundColor: "#005379", color: "white" }}
               >
                 <Icon size="large" name="list" />
-                Recent Tweets
+                Searched Tweets
               </ListGroup.Item>
               <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
               <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
