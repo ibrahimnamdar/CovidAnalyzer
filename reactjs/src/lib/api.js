@@ -1,4 +1,4 @@
-const baseUrl = "http://127.0.0.1:8000";
+const baseUrl = "https://covidanalyzerai.herokuapp.com";
 
 export async function getUsers() {
   const response = await fetch("https://jsonplaceholder.typicode.com/users");

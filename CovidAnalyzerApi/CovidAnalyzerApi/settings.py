@@ -80,6 +80,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'http://localhost',
+    'https://covidanalyzer-ai.herokuapp.com',
 )
 
 ROOT_URLCONF = 'CovidAnalyzerApi.urls'
