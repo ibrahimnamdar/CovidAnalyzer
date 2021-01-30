@@ -7,12 +7,14 @@ import {
   SET_TWEET_SCORES,
   SET_FREQUENT_ENTITIES,
   SET_LATEST_TWEETS,
+  SET_MOST_USED_WORDS,
+  SET_SEARCH_DATA,
   REGISTER_USER_SAGA,
   GET_TWEET_SCORES_SAGA,
   GET_FREQUENT_ENTITIES_SAGA,
   GET_LATEST_TWEETS_SAGA,
   GET_MOST_USED_WORDS_SAGA,
-  SET_MOST_USED_WORDS,
+  GET_SEARCH_DATA_SAGA,
 } from "../constants";
 
 export function setUsers(users) {
@@ -54,6 +56,13 @@ export function setMostUsedWords(mostUsedWords) {
   return {
     type: SET_MOST_USED_WORDS,
     mostUsedWords,
+  };
+}
+
+export function setSearchData(searchData) {
+  return {
+    type: SET_SEARCH_DATA,
+    searchData,
   };
 }
 
@@ -106,5 +115,12 @@ export function getLatestTweetsSaga() {
 export function getMostUsedWordsSaga() {
   return {
     type: GET_MOST_USED_WORDS_SAGA,
+  };
+}
+
+export function getSearchDataSaga(keyword) {
+  return {
+    type: GET_SEARCH_DATA_SAGA,
+    keyword,
   };
 }

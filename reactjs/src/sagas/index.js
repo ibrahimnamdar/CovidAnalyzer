@@ -7,6 +7,7 @@ import watchGetTweetScoresSaga from "./watchers/getTweetScores";
 import watchGetFrequentEntitiesSaga from "./watchers/getFrequentEntities";
 import watchGetLatestTweetsSaga from "./watchers/getLatestTweets";
 import watchGetMostUsedWordsSaga from "./watchers/getMostUsedWords";
+import watchGetSearchDataSaga from "./watchers/getSearchData";
 
 export default function* root() {
   yield all([
@@ -17,5 +18,6 @@ export default function* root() {
     fork(watchGetFrequentEntitiesSaga),
     fork(watchGetLatestTweetsSaga),
     fork(watchGetMostUsedWordsSaga),
+    fork(watchGetSearchDataSaga),
   ]);
 }

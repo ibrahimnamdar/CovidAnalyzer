@@ -51,7 +51,6 @@ class Dashboard extends Component {
 
   render() {
     const { tweetScores, frequentEntities, latestTweets } = this.props;
-    console.log("tweetScores" + JSON.stringify(latestTweets));
 
     const dataBarGraph = {
       labels: frequentEntities ? frequentEntities.keys : [],

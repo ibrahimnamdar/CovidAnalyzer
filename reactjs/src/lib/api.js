@@ -79,8 +79,22 @@ export async function getMostUsedWords() {
   return response.json();
 }
 
+export async function getSearchData(keyword) {
+  const settings = {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `JWT ${localStorage.getItem("token")}`,
+    },
+  };
+  const response = await fetch(
+    `${baseUrl}/tweets/search?keyword=${keyword}`,
+    settings
+  );
+  return response.json();
+}
+
 export async function getUsername(data) {
-  console.log("getUsername" + JSON.stringify(data));
   const settings = {
     method: "POST",
     headers: {
@@ -95,7 +109,6 @@ export async function getUsername(data) {
 }
 
 export async function registerUser(data) {
-  console.log("registerUser" + JSON.stringify(data));
   const settings = {
     method: "POST",
     headers: {

@@ -44,7 +44,7 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def get_frequent_entities(self, request):
-        tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
+        # tagme.GCUBE_TOKEN = config('GCUBE_TOKEN')
         texts = ''
         for tweet in Tweet.objects.all():
             texts += tweet.text
@@ -158,21 +158,46 @@ class TweetViewSet(viewsets.ModelViewSet):
         api = twitterSentiment.API()
         today = date.today()
 
-        for i in range(7):
-            current_day = today - timedelta(days=i)
+        current_day = today
 
-            tweet = api.querySearch(q='covid', geocode=None, lang='en', result_type='recent', count=100,
-                                    until=current_day.strftime('%Y-%m-%d'),
-                                    since_id=None, max_id=None, include_entities=False, tweet_mode="extended",
-                                    return_json=True)
-            data = twitterSentiment.StructureStatusesData(tweet)
+        tweet = api.querySearch(q='covid ' +request.query_params['keyword'], geocode=None, lang='en', result_type='recent', count=1000,
+                                until=current_day.strftime('%Y-%m-%d'),
+                                since_id=None, max_id=None, include_entities=False, tweet_mode="extended",
+                                return_json=True)
+        data = twitterSentiment.StructureStatusesData(tweet)
 
+        structured_tweets = data.getTweet()
 
+        tweets = []
+        for item in structured_tweets[:100]:
+            tweets.append({'text': item['full_text']})
+        sentiment = twitterSentiment.SentimentScore(structured_tweets)
+        score = sentiment.getSentimentClassification()
 
-            structured_tweets = data.getTweet()
-            sentiment = twitterSentiment.SentimentScore(structured_tweets)
-            score = sentiment.getSentimentClassification()
-        return Response(1)
+        texts = ''
+        for tweet in tweets:
+            texts += tweet['text']+ ' '
+
+        # tokenized_words  = nltk.classify.naivebayes.NaiveBayesClassifier.most_informative_features(texts)
+
+        tokenizer = RegexpTokenizer(r'\w+')
+        allWords = tokenizer.tokenize(texts)
+        allWordDist = nltk.FreqDist(w.lower() for w in allWords)
+        stopwords = nltk.corpus.stopwords.words('english')
+        allWordExceptStopDist = nltk.FreqDist(w.lower() for w in allWords if w not in stopwords)
+
+        filtered_words = {key: value for key, value in allWordExceptStopDist.items() if value >= 5}
+
+        excluded_words = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "15", "23", "19", "a", "the", "it",
+                          "me",
+                          "my", "we", "and", "in", "us", "33", "https", "http", "co", "i", "rt", "get"]
+        for item in excluded_words:
+            filtered_words.pop(item, None)
+
+        sa = sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)
+        data_sorted = {k: v for k, v in sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)}
+
+        return Response({'tweets': tweets, 'tweet_score': score, 'keys': list(data_sorted.keys())[:20], 'values': list(data_sorted.values())[:20]})
 
 
 @api_view(['GET'])

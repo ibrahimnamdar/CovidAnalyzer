@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Button, Table } from "semantic-ui-react";
 import { Bar, Line } from "react-chartjs-2";
-import { getTweetScoresSaga, getFrequentEntitiesSaga } from "../../actions";
+import { getSearchDataSaga } from "../../actions";
 import { List, Image, Icon } from "semantic-ui-react";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Form } from "react-bootstrap";
+
 import styles from "./styles";
 
 function dynamicColors() {
@@ -34,20 +35,28 @@ const options = {
   },
 };
 
-class Dashboard extends Component {
+class Search extends Component {
+  state = {
+    keyword: "",
+    loading: false,
+  };
+
   constructor() {
     super();
+    this.handleBtnOnClick = this.handleBtnOnClick.bind(this);
   }
 
-  componentDidMount() {
-    this.props.getTweetScoresSaga();
-    this.props.getFrequentEntitiesSaga();
+  handleBtnOnClick() {
+    this.state.loading = true;
+    this.props.getSearchDataSaga(this.state.keyword);
   }
 
   render() {
-    const { tweetScores, frequentEntities } = this.props;
-    console.log("tweetScores" + JSON.stringify(frequentEntities));
+    const { searchData } = this.props;
 
+    let frequentEntities = searchData;
+    let latestTweets = searchData ? searchData.tweets : {};
+    this.state.loading = searchData ? searchData.loading : true;
     const dataBarGraph = {
       labels: frequentEntities ? frequentEntities.keys : [],
       datasets: [
@@ -69,55 +78,121 @@ class Dashboard extends Component {
       ],
     };
 
-    const dataLineGraph = {
-      labels: tweetScores ? tweetScores.dates : [],
-      datasets: [
-        {
-          label: "Tweet Positivity By Day (out of 1)",
-          data: tweetScores ? tweetScores.tweet_scores : [],
-          backgroundColor: [
-            "rgba(255, 99, 132, 0.2)",
-            "rgba(54, 162, 235, 0.2)",
-            "rgba(255, 206, 86, 0.2)",
-            "rgba(75, 192, 192, 0.2)",
-            "rgba(153, 102, 255, 0.2)",
-            "rgba(255, 159, 64, 0.2)",
-          ],
-          borderColor: [
-            "rgba(255, 99, 132, 1)",
-            "rgba(54, 162, 235, 1)",
-            "rgba(255, 206, 86, 1)",
-            "rgba(75, 192, 192, 1)",
-            "rgba(153, 102, 255, 1)",
-            "rgba(255, 159, 64, 1)",
-          ],
-          borderWidth: 1,
-        },
-      ],
-    };
     return (
       <div>
-        <div className="row dashboard">
-          <div className="col-md-6">
-            <Bar data={dataBarGraph} options={options} height={154.7} />
+        {this.state.loading && (
+          <div
+            style={{
+              position: "absolute",
+              left: "10%",
+              width: "100%",
+              height: "100%",
+              display: "block",
+              backgroundColor: "white",
+              zIndex: "998",
+            }}
+          >
+            <img
+              src="/loading.gif"
+              style={{
+                position: "absolute",
+                width: "500px",
+                height: "500px",
+                zIndex: "999",
+                left: "30%",
+                top: "5%",
+              }}
+            />
+            <h2
+              style={{
+                position: "absolute",
+                zIndex: "999",
+                left: "37%",
+                top: "45%",
+              }}
+            >
+              This may take a while...
+            </h2>
           </div>
-          <div className="col-md-6">
-            <div className="row">
-              <Line data={dataLineGraph} options={options} height={154.7} />
-            </div>
+        )}
+
+        <div className="row" style={{ padding: "15px" }}>
+          <div className="col-md-12">
+            <Form style={{ position: "relative", left: "10%" }}>
+              <h2>Search</h2>
+              <Form.Group controlId="formBasicSearch">
+                <Form.Label style={{ fontWeight: "bold" }}>
+                  Search for a keyword related to covid (e.g. vaccine)
+                </Form.Label>
+                <Form.Control
+                  onChange={(e) => {
+                    this.state.keyword = e.target.value;
+                  }}
+                  type="text"
+                  placeholder="Search"
+                  style={{ width: "20%" }}
+                />
+              </Form.Group>
+
+              <Button
+                variant="primary"
+                type="button"
+                onClick={this.handleBtnOnClick}
+                style={{ backgroundColor: "#005379", color: "white" }}
+              >
+                Submit
+              </Button>
+            </Form>
           </div>
         </div>
-        <div className="row tweets">
+        <div className="row dashboard">
+          <div className="col-md-12">
+            <Bar data={dataBarGraph} options={options} height={100} />
+          </div>
+        </div>
+        <div className="row statistics-search">
+          <div className="col-md-6">
+            <Button
+              type="button"
+              variant="primary"
+              style={{
+                backgroundColor: "#005379",
+                color: "white",
+                cursor: "default",
+                "min-width": "70%",
+              }}
+            >
+              <Icon size="big" name="line graph" />
+              Most used word recently (except covid) :{" "}
+              <span style={{ fontSize: "16px" }}>
+                {frequentEntities && frequentEntities.keys
+                  ? frequentEntities.keys[1]
+                  : "covid"}
+              </span>
+            </Button>
+          </div>
+        </div>
+        <div className="row tweets-search">
           <div className="col-md-12">
             <ListGroup>
               <ListGroup.Item
                 style={{ backgroundColor: "#005379", color: "white" }}
               >
                 <Icon size="large" name="list" />
-                Searched Tweets
+                Recent Tweets
               </ListGroup.Item>
-              <ListGroup.Item>Dapibus ac facilisis in</ListGroup.Item>
-              <ListGroup.Item>Porta ac consectetur ac</ListGroup.Item>
+              {latestTweets &&
+                latestTweets.length > 0 &&
+                latestTweets.map(({ text }, i) => (
+                  <ListGroup.Item key={i}>
+                    <Icon
+                      size="large"
+                      name="twitter"
+                      style={{ "padding-right": "30px", color: "#1DA1F2" }}
+                    />
+                    {text}
+                  </ListGroup.Item>
+                ))}
             </ListGroup>
           </div>
         </div>
@@ -127,13 +202,11 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  tweetScores: state.usersReducer.tweetScores,
-  frequentEntities: state.usersReducer.frequentEntities,
+  searchData: state.usersReducer.searchData,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getTweetScoresSaga: () => dispatch(getTweetScoresSaga()),
-  getFrequentEntitiesSaga: () => dispatch(getFrequentEntitiesSaga()),
+  getSearchDataSaga: (keyword) => dispatch(getSearchDataSaga(keyword)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

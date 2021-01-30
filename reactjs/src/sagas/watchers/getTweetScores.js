@@ -6,8 +6,6 @@ import { getTweetScores } from "../../lib/api";
 
 function* workerGetTweetScoresSaga() {
   const tweetScores = yield call(getTweetScores);
-  console.log("dsfgsdfgd");
-  console.log("sasa" + JSON.stringify(tweetScores));
 
   yield put(setTweetScores(tweetScores));
 }

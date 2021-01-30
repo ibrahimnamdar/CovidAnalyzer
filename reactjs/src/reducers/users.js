@@ -6,6 +6,7 @@ import {
   SET_FREQUENT_ENTITIES,
   SET_LATEST_TWEETS,
   SET_MOST_USED_WORDS,
+  SET_SEARCH_DATA,
 } from "../constants";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   frequentEntities: {},
   latestTweets: {},
   mostUsedWords: {},
+  searchData: {},
 };
 
 export default function setBrowserInfo(state = initialState, action) {
@@ -59,6 +61,11 @@ export default function setBrowserInfo(state = initialState, action) {
       return {
         ...state,
         mostUsedWords: action.mostUsedWords,
+      };
+    case SET_SEARCH_DATA:
+      return {
+        ...state,
+        searchData: action.searchData,
       };
     default:
       return state;

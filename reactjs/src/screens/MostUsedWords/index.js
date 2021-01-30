@@ -31,7 +31,7 @@ class MostUsedWords extends Component {
 
   render() {
     const { mostUsedWords } = this.props;
-    console.log("tweetScores" + JSON.stringify(mostUsedWords));
+
     const options = {
       enableTooltip: true,
       deterministic: false,

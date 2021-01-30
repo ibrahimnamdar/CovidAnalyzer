@@ -6,8 +6,6 @@ import { getFrequentEntities } from "../../lib/api";
 
 function* workerGetFrequentEntitiesSaga() {
   const frequentEntities = yield call(getFrequentEntities);
-  console.log("dsfgsdfgd");
-  console.log("sasa" + JSON.stringify(frequentEntities));
 
   yield put(setFrequentEntities(frequentEntities));
 }

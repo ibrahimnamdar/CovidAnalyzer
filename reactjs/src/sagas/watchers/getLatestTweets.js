@@ -6,8 +6,6 @@ import { getLatestTweets } from "../../lib/api";
 
 function* workerGetLatestTweetsSaga() {
   const latestTweets = yield call(getLatestTweets);
-  console.log("dsfgsdfgd");
-  console.log("sasa" + JSON.stringify(latestTweets));
 
   yield put(setLatestTweets(latestTweets));
 }
