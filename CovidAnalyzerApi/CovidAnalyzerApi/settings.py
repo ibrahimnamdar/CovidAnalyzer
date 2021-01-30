@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import datetime
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'j=h(x0-%$r-^hhr5!j&kjlpl+gj@4-2a0%r1775vnvh3tn7br6'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='foo')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'covidanalyzerai.herokuapp.com']
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Application definition
 
@@ -39,11 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_swagger',
+    'django_q',
     'corsheaders',
 ]
 
+Q_CLUSTER = {
+    "name": "CovidAnalyzerDb",
+    "orm": "default",  # Use Django's ORM + database for broker
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -98,10 +109,10 @@ WSGI_APPLICATION = 'CovidAnalyzerApi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'CovidAnalyzer',
-        'USER': 'postgres',
-        'PASSWORD': '1',
-        'HOST': 'localhost',
+        'NAME': 'd7snjq40kuk1p3',
+        'USER': 'hxqqlsucpdeceu',
+        'PASSWORD': '42e0f99220407da92c8c0cc1d5d8d2b4d1764a6abc66c2192dc8b65761b4383d',
+        'HOST': 'ec2-52-31-233-101.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -146,3 +157,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())

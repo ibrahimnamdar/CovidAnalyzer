@@ -22,7 +22,6 @@ import tagme
 from decouple import config
 import nltk
 from nltk.tokenize import RegexpTokenizer
-import jsonpickle
 
 schema_view = get_swagger_view(title='Pastebin API')
 
@@ -34,6 +33,7 @@ urlpatterns = [
 class TweetScoreViewSet(viewsets.ModelViewSet):
     queryset = TweetScore.objects.all().order_by('date')
     serializer_class = TweetScoreSerializer
+    nltk.data.path.append("./venv/nltk")
 
     @action(detail=False, methods=['get'])
     def get_tweet_scores(self, request):
@@ -102,6 +102,7 @@ class TweetScoreViewSet(viewsets.ModelViewSet):
 class TweetViewSet(viewsets.ModelViewSet):
     queryset = Tweet.objects.all().order_by('id')
     serializer_class = TweetSerializer
+    nltk.data.path.append("./venv/nltk")
 
     @action(detail=False, methods=['get'])
     def get_latest_tweets(self, request):
@@ -111,17 +112,6 @@ class TweetViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def seed_tweets(self, request):
-        # search_args = load_credentials("C:\\Users\\ihnam\\twitter_keys.yaml",
-        #                                yaml_key="search_tweets_v2",
-        #                                env_overwrite=True)
-        # query = gen_request_parameters("covid lang:en", results_per_call=100)
-        # tweets = collect_results(query,
-        #                          max_tweets=100,
-        #                          result_stream_args=search_args)
-        #
-        # for tweet in tweets:
-        #     if not tweet['id']:
-        #         Tweet.objects.create(id=tweet['id'], text=tweet['text'])
         twitter_client_key = config('TWITTER_CLIENT_KEY')
         twitter_client_secret = config('TWITTER_CLIENT_SECRET')
         os.environ.setdefault("TWITTER_CLIENT_KEY", twitter_client_key)
@@ -145,22 +135,26 @@ class TweetViewSet(viewsets.ModelViewSet):
             structured_tweets = data.getTweet()
             sentiment = twitterSentiment.SentimentScore(structured_tweets)
             score = sentiment.getSentimentClassification()
-            TweetScore.objects.create(tweet_score=score, date=current_day)
+            tweet_score_id = int(f'{current_day.day}{current_day.month}{current_day.year}')
+            TweetScore.objects.create(id=tweet_score_id, tweet_score=score, date=current_day)
+
         return Response(1)
 
     @action(detail=False, methods=['get'])
     def search(self, request):
+        nltk.data.path.append("./venv/nltk")
         twitter_client_key = config('TWITTER_CLIENT_KEY')
         twitter_client_secret = config('TWITTER_CLIENT_SECRET')
-        os.environ.setdefault("TWITTER_CLIENT_KEY", twitter_client_key)
-        os.environ.setdefault("TWITTER_CLIENT_SECRET", twitter_client_secret)
+        os.environ.setdefault("TWITTER_CLIENT_KEY", 'X8CEgZEOMZkHHrHKYy3b5MFZo')
+        os.environ.setdefault("TWITTER_CLIENT_SECRET", '5FJHXLfWPB18eMFB89ceCjRLX8sCxey9Lt0fRYzf6fBrw0lL2Z')
 
         api = twitterSentiment.API()
         today = date.today()
 
         current_day = today
 
-        tweet = api.querySearch(q='covid ' +request.query_params['keyword'], geocode=None, lang='en', result_type='recent', count=1000,
+        tweet = api.querySearch(q='covid ' + request.query_params['keyword'], geocode=None, lang='en',
+                                result_type='recent', count=1000,
                                 until=current_day.strftime('%Y-%m-%d'),
                                 since_id=None, max_id=None, include_entities=False, tweet_mode="extended",
                                 return_json=True)
@@ -176,9 +170,7 @@ class TweetViewSet(viewsets.ModelViewSet):
 
         texts = ''
         for tweet in tweets:
-            texts += tweet['text']+ ' '
-
-        # tokenized_words  = nltk.classify.naivebayes.NaiveBayesClassifier.most_informative_features(texts)
+            texts += tweet['text'] + ' '
 
         tokenizer = RegexpTokenizer(r'\w+')
         allWords = tokenizer.tokenize(texts)
@@ -197,7 +189,8 @@ class TweetViewSet(viewsets.ModelViewSet):
         sa = sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)
         data_sorted = {k: v for k, v in sorted(filtered_words.items(), key=lambda x: x[1], reverse=True)}
 
-        return Response({'tweets': tweets, 'tweet_score': score, 'keys': list(data_sorted.keys())[:20], 'values': list(data_sorted.values())[:20]})
+        return Response({'tweets': tweets, 'tweet_score': score, 'keys': list(data_sorted.keys())[:20],
+                         'values': list(data_sorted.values())[:20]})
 
 
 @api_view(['GET'])

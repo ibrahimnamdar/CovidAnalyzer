@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=d7snjq40kuk1p3
+      - POSTGRES_USER=hxqqlsucpdeceu
+      - POSTGRES_PASSWORD=42e0f99220407da92c8c0cc1d5d8d2b4d1764a6abc66c2192dc8b65761b4383d
+      - POSTGRES_HOST=ec2-52-31-233-101.eu-west-1.compute.amazonaws.com
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
