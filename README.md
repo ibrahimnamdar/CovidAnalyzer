@@ -1,6 +1,5 @@
 # SWE-573
 
-This repository uses COVID related posts to examine the public response to
-interventions.
+This repository uses COVID related twitter posts to analyze data using NLTK, Twitter Sentiment etc. to understand how people react to covid. 
 
 Application theme: https://codepen.io/ibrahimnamdar/pen/WNGqxBw
