@@ -1,4 +1,4 @@
-# SWE-573
+# Covid Analyzer
 
 This repository uses COVID related twitter posts to analyze data using NLTK, Twitter Sentiment etc. to understand how people react to covid. 
 
